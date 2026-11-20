@@ -8,8 +8,8 @@ Mentor: Prof. Kalpana Dwivedi
 
 from pathlib import Path
 
-import streamlit as st
 import pandas as pd
+import streamlit as st
 
 from src.ui import apply_custom_css
 from src.data.loader import load_analysis_data
@@ -28,52 +28,93 @@ st.set_page_config(
 
 
 # =========================================================
-# 2. GLOBAL STYLING
+# 2. PROJECT PATHS
+# =========================================================
+
+BASE_DIR = Path(__file__).resolve().parent
+
+ASSETS_DIR = BASE_DIR / "assets"
+LOGO_PATH = ASSETS_DIR / "abes-logo.png"
+
+
+# =========================================================
+# 3. GLOBAL STYLING
 # =========================================================
 
 apply_custom_css()
 
 
 # =========================================================
-# 3. ABES LOGO
+# 4. ABES LOGO
 # =========================================================
 
-BASE_DIR = Path(__file__).resolve().parent
-
-logo_path = BASE_DIR / "assets" / "abes-logo.png"
-
-if logo_path.is_file() and logo_path.stat().st_size > 100:
+if LOGO_PATH.is_file() and LOGO_PATH.stat().st_size > 100:
 
     st.logo(
-        str(logo_path),
+        str(LOGO_PATH),
         size="large"
     )
 
 else:
-    st.sidebar.error(
+
+    st.sidebar.warning(
         "ABES logo not found. Check assets/abes-logo.png."
     )
 
 
 # =========================================================
-# 4. LOAD DATASET
+# 5. LOAD DATABASE
 # =========================================================
 
 try:
+
     df_raw = load_analysis_data()
 
 except Exception as error:
-    st.error(f"Unable to load database records: {error}")
+
+    st.error(
+        f"Unable to load database records: {error}"
+    )
+
     st.stop()
 
 
-if df_raw.empty:
-    st.error("No records found in the database.")
+if df_raw is None or df_raw.empty:
+
+    st.error(
+        "No records were found in the database."
+    )
+
     st.stop()
 
 
 # =========================================================
-# 5. PREPARE FILTER OPTIONS
+# 6. VALIDATE REQUIRED COLUMNS
+# =========================================================
+
+required_columns = [
+    "region_name",
+    "product_category"
+]
+
+missing_columns = [
+    column
+    for column in required_columns
+    if column not in df_raw.columns
+]
+
+if missing_columns:
+
+    st.error(
+        "Required database columns are missing: "
+        + ", ".join(missing_columns)
+    )
+
+    st.stop()
+
+
+# =========================================================
+# 7. PREPARE FILTER OPTIONS
 # =========================================================
 
 all_regions = sorted(
@@ -90,86 +131,100 @@ all_categories = sorted(
     .tolist()
 )
 
-all_segments = (
-    ["All"] +
-    sorted(
-        df_raw["customer_segment"]
-        .dropna()
-        .unique()
-        .tolist()
+
+if "customer_segment" in df_raw.columns:
+
+    all_segments = (
+        ["All"]
+        + sorted(
+            df_raw["customer_segment"]
+            .dropna()
+            .unique()
+            .tolist()
+        )
     )
-    if "customer_segment" in df_raw.columns
-    else ["All"]
-)
+
+else:
+
+    all_segments = ["All"]
 
 
 # Prepare available years
 
+available_years = []
+
 if "order_date" in df_raw.columns:
 
-    date_values = pd.to_datetime(
+    parsed_dates = pd.to_datetime(
         df_raw["order_date"],
         errors="coerce"
-    ).dropna()
-
-    available_years = sorted(
-        date_values.dt.year.unique().tolist()
     )
 
-else:
-    available_years = []
+    available_years = sorted(
+        parsed_dates.dropna().dt.year.unique().tolist()
+    )
 
 
 # =========================================================
-# 6. INITIALIZE FILTER SESSION STATE
+# 8. INITIALIZE SESSION STATE
 # =========================================================
 
 if "filter_regions" not in st.session_state:
+
     st.session_state["filter_regions"] = all_regions
 
+
 if "filter_categories" not in st.session_state:
+
     st.session_state["filter_categories"] = all_categories
 
+
 if "filter_segment" not in st.session_state:
+
     st.session_state["filter_segment"] = "All"
+
 
 if available_years:
 
-    default_years = (
+    default_year_range = (
         int(min(available_years)),
         int(max(available_years))
     )
 
     if "filter_years" not in st.session_state:
-        st.session_state["filter_years"] = default_years
+
+        st.session_state["filter_years"] = default_year_range
 
 
-# Keep stored selections valid if dataset options change
+# Remove selections that are no longer available
 
 st.session_state["filter_regions"] = [
-    region
-    for region in st.session_state["filter_regions"]
-    if region in all_regions
+    value
+    for value in st.session_state["filter_regions"]
+    if value in all_regions
 ]
 
 st.session_state["filter_categories"] = [
-    category
-    for category in st.session_state["filter_categories"]
-    if category in all_categories
+    value
+    for value in st.session_state["filter_categories"]
+    if value in all_categories
 ]
 
 if st.session_state["filter_segment"] not in all_segments:
+
     st.session_state["filter_segment"] = "All"
 
 
 # =========================================================
-# 7. SIDEBAR FILTERS
+# 9. SIDEBAR FILTERS
 # =========================================================
 
-st.sidebar.markdown("### Global Slicing Filters")
+st.sidebar.markdown(
+    "### Global Slicing Filters"
+)
 
 st.sidebar.caption(
-    "Filter selections apply across all dashboard pages."
+    "Filter selections apply across dashboard pages."
 )
 
 
@@ -204,36 +259,51 @@ st.sidebar.selectbox(
 
 if available_years:
 
-    minimum_year = int(min(available_years))
-    maximum_year = int(max(available_years))
+    min_year = int(min(available_years))
+    max_year = int(max(available_years))
 
-    current_years = st.session_state["filter_years"]
+    current_range = st.session_state["filter_years"]
 
-    current_years = (
-        max(minimum_year, min(maximum_year, current_years[0])),
-        max(minimum_year, min(maximum_year, current_years[1]))
+    # Keep the saved range within the available years
+
+    start_year = max(
+        min_year,
+        min(max_year, int(current_range[0]))
     )
 
-    if current_years[0] > current_years[1]:
-        current_years = (minimum_year, maximum_year)
+    end_year = max(
+        min_year,
+        min(max_year, int(current_range[1]))
+    )
 
-    st.session_state["filter_years"] = current_years
+    if start_year > end_year:
 
-    if minimum_year < maximum_year:
+        start_year = min_year
+        end_year = max_year
+
+    st.session_state["filter_years"] = (
+        start_year,
+        end_year
+    )
+
+    if min_year < max_year:
 
         st.sidebar.slider(
             "Year Range",
-            min_value=minimum_year,
-            max_value=maximum_year,
+            min_value=min_year,
+            max_value=max_year,
             key="filter_years"
         )
 
     else:
-        st.sidebar.caption(f"Available year: {minimum_year}")
+
+        st.sidebar.caption(
+            f"Available year: {min_year}"
+        )
 
 
 # =========================================================
-# 8. RESET FILTERS
+# 10. RESET FILTERS
 # =========================================================
 
 if st.sidebar.button(
@@ -242,10 +312,13 @@ if st.sidebar.button(
 ):
 
     st.session_state["filter_regions"] = all_regions
+
     st.session_state["filter_categories"] = all_categories
+
     st.session_state["filter_segment"] = "All"
 
     if available_years:
+
         st.session_state["filter_years"] = (
             int(min(available_years)),
             int(max(available_years))
@@ -255,34 +328,36 @@ if st.sidebar.button(
 
 
 # =========================================================
-# 9. SIDEBAR SYSTEM STATUS
+# 11. SIDEBAR SYSTEM STATUS
 # =========================================================
 
 st.sidebar.markdown("---")
 
-st.sidebar.markdown("### System Status")
+st.sidebar.markdown(
+    "### System Status"
+)
 
-st.sidebar.success("SQLite Database Active")
+st.sidebar.success(
+    "SQLite Database Active"
+)
 
 st.sidebar.info(
     f"Records Ingested: {len(df_raw):,}"
 )
 
-st.sidebar.caption(
-    "MCA Capstone Project • ABES Engineering College"
-)
-
 st.sidebar.markdown(
     """
     <div style="
-        border-top:1px solid #303644;
-        padding-top:12px;
-        margin-top:15px;
-        color:#94A3B8;
-        font-size:11px;
-        line-height:1.7;
+        border-top: 1px solid #303644;
+        padding-top: 12px;
+        margin-top: 15px;
+        color: #94A3B8;
+        font-size: 11px;
+        line-height: 1.8;
     ">
         Region-Wise Revenue Contribution Analysis<br>
+        MCA 2nd Year Capstone Project<br>
+        ABES Engineering College<br>
         Mentor: Prof. Kalpana Dwivedi
     </div>
     """,
@@ -291,65 +366,60 @@ st.sidebar.markdown(
 
 
 # =========================================================
-# 10. MULTIPAGE NAVIGATION
+# 12. MULTIPAGE NAVIGATION
 # =========================================================
+
+overview_page = BASE_DIR / "pages" / "01_Overview.py"
+
+trends_page = BASE_DIR / "pages" / "02_Longitudinal_Trends.py"
+
+
+# Validate page files before registering navigation
+
+if not overview_page.is_file():
+
+    st.error(
+        "Overview page not found: pages/01_Overview.py"
+    )
+
+    st.stop()
+
+
+if not trends_page.is_file():
+
+    st.error(
+        "Longitudinal Trends page not found: "
+        "pages/02_Longitudinal_Trends.py"
+    )
+
+    st.stop()
+
 
 pages = [
 
     st.Page(
-        "pages/01_Overview.py",
+        str(overview_page),
         title="01 Overview",
         icon="📊",
         default=True
     ),
 
     st.Page(
-        "pages/02_Longitudinal_Trends.py",
+        str(trends_page),
         title="02 Longitudinal Trends",
         icon="📈"
-    ),
-
-    st.Page(
-        "pages/03_Regional_Comparison.py",
-        title="03 Regional Comparison",
-        icon="🌍"
-    ),
-
-    st.Page(
-        "pages/04_Product_Pareto.py",
-        title="04 Product Pareto",
-        icon="📦"
-    ),
-
-    st.Page(
-        "pages/05_Profitability_Insights.py",
-        title="05 Profitability Insights",
-        icon="💹"
-    ),
-
-    st.Page(
-        "pages/06_Statistical_Testing.py",
-        title="06 Statistical Testing",
-        icon="📐"
-    ),
-
-    st.Page(
-        "pages/07_Data_Quality_Export.py",
-        title="07 Data Quality & Export",
-        icon="📁"
-    ),
-
-    st.Page(
-        "pages/08_About.py",
-        title="08 About",
-        icon="ℹ️"
     )
 
 ]
 
 
-# Run selected page
+# =========================================================
+# 13. RUN APPLICATION NAVIGATION
+# =========================================================
 
-navigation = st.navigation(pages)
+navigation = st.navigation(
+    pages,
+    position="sidebar"
+)
 
 navigation.run()
