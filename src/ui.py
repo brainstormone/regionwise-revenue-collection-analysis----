@@ -1,8 +1,9 @@
 """
 UI Framework & Reusable Components Module
 Region-Wise Revenue Contribution Analysis
-MCA 2nd Year Capstone Project - ABES Engineering College
-Mentor: Prof. Kalpna Dwivedi
+MCA 2nd Year Capstone Project
+ABES Engineering College
+By- Abhishek Kumar Mishra
 """
 
 import streamlit as st
