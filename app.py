@@ -32,9 +32,7 @@ st.set_page_config(
 # =========================================================
 
 BASE_DIR = Path(__file__).resolve().parent
-
-ASSETS_DIR = BASE_DIR / "assets"
-LOGO_PATH = ASSETS_DIR / "abes-logo.png"
+LOGO_PATH = BASE_DIR / "assets" / "abes-logo.png"
 
 
 # =========================================================
@@ -49,16 +47,9 @@ apply_custom_css()
 # =========================================================
 
 if LOGO_PATH.is_file() and LOGO_PATH.stat().st_size > 100:
-
     st.logo(
         str(LOGO_PATH),
         size="large"
-    )
-
-else:
-
-    st.sidebar.warning(
-        "ABES logo not found. Check assets/abes-logo.png."
     )
 
 
@@ -67,29 +58,20 @@ else:
 # =========================================================
 
 try:
-
     df_raw = load_analysis_data()
 
 except Exception as error:
-
-    st.error(
-        f"Unable to load database records: {error}"
-    )
-
+    st.error(f"Unable to load database records: {error}")
     st.stop()
 
 
 if df_raw is None or df_raw.empty:
-
-    st.error(
-        "No records were found in the database."
-    )
-
+    st.error("No records were found in the database.")
     st.stop()
 
 
 # =========================================================
-# 6. VALIDATE REQUIRED COLUMNS
+# 6. VALIDATE DATABASE COLUMNS
 # =========================================================
 
 required_columns = [
@@ -98,18 +80,15 @@ required_columns = [
 ]
 
 missing_columns = [
-    column
-    for column in required_columns
+    column for column in required_columns
     if column not in df_raw.columns
 ]
 
 if missing_columns:
-
     st.error(
-        "Required database columns are missing: "
+        "Missing required database columns: "
         + ", ".join(missing_columns)
     )
-
     st.stop()
 
 
@@ -118,43 +97,32 @@ if missing_columns:
 # =========================================================
 
 all_regions = sorted(
-    df_raw["region_name"]
-    .dropna()
-    .unique()
-    .tolist()
+    df_raw["region_name"].dropna().unique().tolist()
 )
 
 all_categories = sorted(
-    df_raw["product_category"]
-    .dropna()
-    .unique()
-    .tolist()
+    df_raw["product_category"].dropna().unique().tolist()
 )
 
-
 if "customer_segment" in df_raw.columns:
-
-    all_segments = (
-        ["All"]
-        + sorted(
+    all_segments = [
+        "All",
+        *sorted(
             df_raw["customer_segment"]
             .dropna()
             .unique()
             .tolist()
         )
-    )
-
+    ]
 else:
-
     all_segments = ["All"]
 
 
-# Prepare available years
+# Prepare year options
 
 available_years = []
 
 if "order_date" in df_raw.columns:
-
     parsed_dates = pd.to_datetime(
         df_raw["order_date"],
         errors="coerce"
@@ -170,48 +138,37 @@ if "order_date" in df_raw.columns:
 # =========================================================
 
 if "filter_regions" not in st.session_state:
-
     st.session_state["filter_regions"] = all_regions
 
-
 if "filter_categories" not in st.session_state:
-
     st.session_state["filter_categories"] = all_categories
 
-
 if "filter_segment" not in st.session_state:
-
     st.session_state["filter_segment"] = "All"
 
-
 if available_years:
-
     default_year_range = (
         int(min(available_years)),
         int(max(available_years))
     )
 
     if "filter_years" not in st.session_state:
-
         st.session_state["filter_years"] = default_year_range
 
 
-# Remove selections that are no longer available
+# Ensure saved selections remain valid
 
 st.session_state["filter_regions"] = [
-    value
-    for value in st.session_state["filter_regions"]
-    if value in all_regions
+    item for item in st.session_state["filter_regions"]
+    if item in all_regions
 ]
 
 st.session_state["filter_categories"] = [
-    value
-    for value in st.session_state["filter_categories"]
-    if value in all_categories
+    item for item in st.session_state["filter_categories"]
+    if item in all_categories
 ]
 
 if st.session_state["filter_segment"] not in all_segments:
-
     st.session_state["filter_segment"] = "All"
 
 
@@ -219,16 +176,12 @@ if st.session_state["filter_segment"] not in all_segments:
 # 9. SIDEBAR FILTERS
 # =========================================================
 
-st.sidebar.markdown(
-    "### Global Slicing Filters"
-)
+st.sidebar.markdown("### Global Slicing Filters")
 
 st.sidebar.caption(
     "Filter selections apply across dashboard pages."
 )
 
-
-# Region filter
 
 st.sidebar.multiselect(
     "Region",
@@ -237,16 +190,12 @@ st.sidebar.multiselect(
 )
 
 
-# Product category filter
-
 st.sidebar.multiselect(
     "Product Category",
     options=all_categories,
     key="filter_categories"
 )
 
-
-# Customer segment filter
 
 st.sidebar.selectbox(
     "Customer Segment",
@@ -255,7 +204,7 @@ st.sidebar.selectbox(
 )
 
 
-# Year range filter
+# Year range
 
 if available_years:
 
@@ -263,8 +212,6 @@ if available_years:
     max_year = int(max(available_years))
 
     current_range = st.session_state["filter_years"]
-
-    # Keep the saved range within the available years
 
     start_year = max(
         min_year,
@@ -277,9 +224,7 @@ if available_years:
     )
 
     if start_year > end_year:
-
-        start_year = min_year
-        end_year = max_year
+        start_year, end_year = min_year, max_year
 
     st.session_state["filter_years"] = (
         start_year,
@@ -287,19 +232,14 @@ if available_years:
     )
 
     if min_year < max_year:
-
         st.sidebar.slider(
             "Year Range",
             min_value=min_year,
             max_value=max_year,
             key="filter_years"
         )
-
     else:
-
-        st.sidebar.caption(
-            f"Available year: {min_year}"
-        )
+        st.sidebar.caption(f"Available year: {min_year}")
 
 
 # =========================================================
@@ -312,13 +252,10 @@ if st.sidebar.button(
 ):
 
     st.session_state["filter_regions"] = all_regions
-
     st.session_state["filter_categories"] = all_categories
-
     st.session_state["filter_segment"] = "All"
 
     if available_years:
-
         st.session_state["filter_years"] = (
             int(min(available_years)),
             int(max(available_years))
@@ -332,14 +269,9 @@ if st.sidebar.button(
 # =========================================================
 
 st.sidebar.markdown("---")
+st.sidebar.markdown("### System Status")
 
-st.sidebar.markdown(
-    "### System Status"
-)
-
-st.sidebar.success(
-    "SQLite Database Active"
-)
+st.sidebar.success("SQLite Database Active")
 
 st.sidebar.info(
     f"Records Ingested: {len(df_raw):,}"
@@ -366,55 +298,58 @@ st.sidebar.markdown(
 
 
 # =========================================================
-# 12. MULTIPAGE NAVIGATION
+# 12. VERIFY ALL EIGHT PAGE FILES
 # =========================================================
 
-overview_page = BASE_DIR / "pages" / "01_Overview.py"
-
-trends_page = BASE_DIR / "pages" / "02_Longitudinal_Trends.py"
-
-
-# Validate page files before registering navigation
-
-if not overview_page.is_file():
-
-    st.error(
-        "Overview page not found: pages/01_Overview.py"
-    )
-
-    st.stop()
-
-
-if not trends_page.is_file():
-
-    st.error(
-        "Longitudinal Trends page not found: "
-        "pages/02_Longitudinal_Trends.py"
-    )
-
-    st.stop()
-
-
-pages = [
-
-    st.Page(
-        str(overview_page),
-        title="01 Overview",
-        icon="📊",
-        default=True
-    ),
-
-    st.Page(
-        str(trends_page),
-        title="02 Longitudinal Trends",
-        icon="📈"
-    )
-
+page_definitions = [
+    ("01_Overview.py", "01 Overview", "📊"),
+    ("02_Longitudinal_Trends.py", "02 Longitudinal Trends", "📈"),
+    ("03_Regional_Comparison.py", "03 Regional Comparison", "🌍"),
+    ("04_Product_Pareto.py", "04 Product Pareto", "📦"),
+    ("05_Profitability_Insights.py", "05 Profitability Insights", "💹"),
+    ("06_Statistical_Testing.py", "06 Statistical Testing", "📐"),
+    ("07_Data_Quality_Export.py", "07 Data Quality & Export", "📁"),
+    ("08_About.py", "08 About", "ℹ️"),
 ]
 
+pages_directory = BASE_DIR / "pages"
+
+missing_pages = [
+    filename
+    for filename, _, _ in page_definitions
+    if not (pages_directory / filename).is_file()
+]
+
+if missing_pages:
+    st.error(
+        "The following page files could not be found in the pages folder: "
+        + ", ".join(missing_pages)
+    )
+    st.stop()
+
 
 # =========================================================
-# 13. RUN APPLICATION NAVIGATION
+# 13. REGISTER ALL EIGHT PAGES
+# =========================================================
+
+pages = []
+
+for index, (filename, title, icon) in enumerate(page_definitions):
+
+    page_path = pages_directory / filename
+
+    pages.append(
+        st.Page(
+            str(page_path),
+            title=title,
+            icon=icon,
+            default=(index == 0)
+        )
+    )
+
+
+# =========================================================
+# 14. RUN MULTIPAGE APPLICATION
 # =========================================================
 
 navigation = st.navigation(
