@@ -1,109 +1,96 @@
-            prefix = ""
 
-        with column:
+"""
+UI Framework & Reusable Components
+Region-Wise Revenue Contribution Analysis
+MCA 2nd Year Capstone Project - ABES Engineering College
+"""
 
-            st.markdown(f"""
-            <div class="kpi-card">
+from pathlib import Path
+from html import escape
+from typing import List, Dict, Any, Optional
 
-                <div class="kpi-title">
-                    {title}
-                </div>
-
-                <div class="kpi-value">
-                    {value}
-                </div>
-
-                <div class="kpi-footer">
-
-                    <span class="{badge_class}">
-                        {prefix}{delta}
-                    </span>
-
-                    <span class="kpi-subtitle">
-                        {subtitle}
-                    </span>
-
-                </div>
-
-            </div>
-            """, unsafe_allow_html=True)
+import streamlit as st
 
 
 # =========================================================
-# 5. EXECUTIVE INSIGHT BANNER
+# 1. GLOBAL CUSTOM CSS
 # =========================================================
 
-def render_insight_box(
-    title: str,
-    text: str,
-    box_type: str = "info",
-    height: int = 95
-) -> None:
-    """
-    Render an executive insight banner.
+def apply_custom_css() -> None:
+    """Apply the ABES executive dashboard design system."""
 
-    Supports: info, success, warning and danger.
-    """
+    st.markdown("""
+    <style>
 
-    safe_title = escape(str(title))
-    safe_text = escape(str(text))
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-    configurations = {
-        "info": ("#EFF6FF", "#2563EB", "#1E40AF", "ⓘ"),
-        "success": ("#ECFDF5", "#059669", "#065F46", "✓"),
-        "warning": ("#FFF5DC", "#E6A12A", "#7C4A03", "⚠"),
-        "danger": ("#FFF1F2", "#E11D48", "#9F1239", "⚠"),
+    :root {
+        --navy: #241018;
+        --navy-light: #3B1724;
+        --maroon: #9B1835;
+        --maroon-dark: #6F1028;
+        --background: #F7F4F5;
+        --card: #FFFFFF;
+        --text: #172033;
+        --muted: #718096;
+        --border: #E9DDE1;
     }
 
-    background, border, heading, icon = configurations.get(
-        box_type,
-        configurations["info"]
-    )
+    html, body, [class*="css"] {
+        font-family: 'Inter', sans-serif !important;
+    }
 
-    st.markdown(f"""
-    <div style="
-        background:{background};
-        border:1px solid {border}33;
-        border-left:5px solid {border};
-        border-radius:9px;
-        padding:14px 17px;
-        margin:12px 0 24px;
-        color:{heading};
-        font-size:14px;
-        line-height:1.8;
-    ">
+    .stApp {
+        background: var(--background);
+    }
 
-        <span style="font-weight:800;">
-            {icon} {safe_title}:
-        </span>
+    .block-container {
+        max-width: 1500px !important;
+        padding: 1.2rem 2rem 2rem !important;
+    }
 
-        {safe_text}
+    /* Remove unnecessary decoration */
 
-    </div>
-    """, unsafe_allow_html=True)
+    #MainMenu {
+        visibility: hidden;
+    }
 
+    footer {
+        visibility: hidden;
+    }
 
-# =========================================================
-# 6. CHART HEADER
-# =========================================================
+    /* =====================================================
+       SIDEBAR
+       ===================================================== */
 
-def render_chart_header(
-    title: str,
-    subtitle: str = "",
-    help_text: Optional[str] = None
-) -> None:
-    """
-    Render a reusable chart heading and optional information popover.
-    """
+    section[data-testid="stSidebar"] {
+        background: var(--navy) !important;
+        border-right: 1px solid #252B3A !important;
+    }
 
-    st.markdown(
-        f'<div class="chart-heading">{escape(str(title))}</div>',
-        unsafe_allow_html=True
-    )
+    section[data-testid="stSidebar"] > div {
+        background: var(--navy) !important;
+    }
 
-    if subtitle:
-        st.caption(subtitle)
+    section[data-testid="stSidebar"] * {
+        color: #E5E7EB;
+    }
 
-    if help_text:
-        with st.popover("ⓘ Chart Information"):
-            st.markdown(help_text)
+    section[data-testid="stSidebar"] h1,
+    section[data-testid="stSidebar"] h2,
+    section[data-testid="stSidebar"] h3 {
+        color: #FFFFFF !important;
+    }
+
+    /* Navigation links */
+
+    section[data-testid="stSidebar"] [data-testid="stSidebarNav"] {
+        padding-top: 8px;
+    }
+
+    section[data-testid="stSidebar"] [data-testid="stSidebarNav"] a {
+        background: transparent !important;
+        border-radius: 7px !important;
+        margin: 3px 8px !important;
+        padding: 10px 12px !important;
+        border-left: 3px solid transparent !important;
