@@ -1,540 +1,220 @@
-
 """
-UI Framework & Reusable Components
+UI Framework & Reusable Components Module
 Region-Wise Revenue Contribution Analysis
 MCA 2nd Year Capstone Project - ABES Engineering College
-Mentor: Prof. Kalpana Dwivedi
+Mentor: Prof. Kalpna Dwivedi
 """
 
-from pathlib import Path
-from html import escape
-from textwrap import dedent
+import streamlit as st
+import streamlit.components.v1 as components
 from typing import List, Dict, Any, Optional
 
-import streamlit as st
-
-
-# =========================================================
-# 1. GLOBAL CUSTOM CSS
-# =========================================================
 
 def apply_custom_css() -> None:
-    """Apply the ABES executive dashboard design system."""
-
-    st.markdown(dedent("""
+    """
+    Injects custom CSS to ensure consistent Tailwind-aligned styling
+    across native Streamlit elements, reducing whitespace and improving typography.
+    """
+    custom_css = """
     <style>
-
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-
-    :root {
-        --navy: #11151F;
-        --navy-light: #252B3A;
-        --maroon: #94152F;
-        --maroon-dark: #650D20;
-        --background: #F4F6FA;
-        --card: #FFFFFF;
-        --text: #172033;
-        --muted: #718096;
-        --border: #E1E5EC;
-    }
-
-    html, body, [class*="css"] {
-        font-family: 'Inter', sans-serif !important;
-    }
-
-    .stApp {
-        background: var(--background);
-    }
-
-    .block-container {
-        max-width: 1500px !important;
-        padding: 1.2rem 2rem 2rem !important;
-    }
-
-    /* Remove unnecessary decoration */
-
-    #MainMenu {
-        visibility: hidden;
-    }
-
-    footer {
-        visibility: hidden;
-    }
-
-    /* =====================================================
-       SIDEBAR
-       ===================================================== */
-
-    section[data-testid="stSidebar"] {
-        background: var(--navy) !important;
-        border-right: 1px solid #252B3A !important;
-    }
-
-    section[data-testid="stSidebar"] > div {
-        background: var(--navy) !important;
-    }
-
-    section[data-testid="stSidebar"] * {
-        color: #E5E7EB;
-    }
-
-    section[data-testid="stSidebar"] h1,
-    section[data-testid="stSidebar"] h2,
-    section[data-testid="stSidebar"] h3 {
-        color: #FFFFFF !important;
-    }
-
-    /* Navigation links */
-
-    section[data-testid="stSidebar"] [data-testid="stSidebarNav"] {
-        padding-top: 8px;
-    }
-
-    section[data-testid="stSidebar"] [data-testid="stSidebarNav"] a {
-        background: transparent !important;
-        border-radius: 7px !important;
-        margin: 3px 8px !important;
-        padding: 10px 12px !important;
-        border-left: 3px solid transparent !important;
-        transition: all 0.2s ease-in-out !important;
-    }
-
-    section[data-testid="stSidebar"] [data-testid="stSidebarNav"] a:hover {
-        background: #303644 !important;
-        border-left: 3px solid #E64A62 !important;
-        transform: translateX(3px);
-    }
-
-    section[data-testid="stSidebar"] [data-testid="stSidebarNav"] a[aria-current="page"] {
-        background: #303644 !important;
-        border-left: 3px solid #E64A62 !important;
-        font-weight: 700 !important;
-    }
-
-    /* Sidebar filters */
-
-    section[data-testid="stSidebar"] label {
-        color: #E5E7EB !important;
-        font-size: 13px !important;
-    }
-
-    section[data-testid="stSidebar"] [data-baseweb="select"] > div {
-        background: #F8FAFC !important;
-        border-radius: 7px !important;
-    }
-
-    section[data-testid="stSidebar"] [data-baseweb="select"] * {
-        color: #111827 !important;
-    }
-
-    section[data-testid="stSidebar"] [data-testid="stSlider"] p {
-        color: #E5E7EB !important;
-    }
-
-    /* Sidebar buttons */
-
-    section[data-testid="stSidebar"] .stButton button {
-        background: #303644 !important;
-        color: white !important;
-        border: 1px solid #485064 !important;
-        border-radius: 7px !important;
-        transition: all 0.2s ease !important;
-    }
-
-    section[data-testid="stSidebar"] .stButton button:hover {
-        background: var(--maroon) !important;
-        border-color: #E64A62 !important;
-        transform: translateY(-1px);
-    }
-
-    /* =====================================================
-       DASHBOARD HEADER
-       ===================================================== */
-
-    .dashboard-header {
-        position: relative;
-        overflow: hidden;
-        background: linear-gradient(
-            115deg,
-            #650D20 0%,
-            #94152F 55%,
-            #741027 100%
-        );
-        border-radius: 0 0 16px 16px;
-        padding: 30px 25px;
-        margin-bottom: 24px;
-        min-height: 175px;
-        text-align: center;
-        box-shadow: 0 6px 18px rgba(101, 13, 32, 0.18);
-    }
-
-    .dashboard-header::after {
-        content: "";
-        position: absolute;
-        top: -90px;
-        right: -50px;
-        width: 380px;
-        height: 180px;
-        background: rgba(255,255,255,0.07);
-        border-radius: 50%;
-        transform: rotate(-12deg);
-        pointer-events: none;
-    }
-
-    .header-content {
-        position: relative;
-        z-index: 2;
-    }
-
-    .header-badge {
-        display: inline-block;
-        background: rgba(255,255,255,0.14);
-        color: #FFFFFF;
-        border: 1px solid rgba(255,255,255,0.25);
-        border-radius: 20px;
-        padding: 6px 15px;
-        font-size: 12px;
-        font-weight: 700;
-        letter-spacing: 0.7px;
-        margin-bottom: 13px;
-    }
-
-    .header-title {
-        color: #FFFFFF !important;
-        font-size: clamp(25px, 3vw, 38px) !important;
-        line-height: 1.2 !important;
-        font-weight: 800 !important;
-        margin: 0 0 9px 0 !important;
-    }
-
-    .header-subtitle {
-        color: #FCE7EC !important;
-        font-size: 17px !important;
-        margin: 0 !important;
-    }
-
-    /* =====================================================
-       KPI CARDS
-       ===================================================== */
-
-    .kpi-card {
-        background: #FFFFFF;
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 17px 15px;
-        min-height: 112px;
-        box-shadow: 0 3px 8px rgba(15,23,42,0.06);
-        transition: all 0.22s ease-in-out;
-        margin-bottom: 16px;
-        box-sizing: border-box;
-    }
-
-    .kpi-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 9px 20px rgba(15,23,42,0.12);
-        border-color: #C5CCD8;
-    }
-
-    .kpi-title {
-        color: #64748B;
-        font-size: 12px;
-        font-weight: 700;
-        letter-spacing: 0.7px;
-        text-transform: uppercase;
-        margin-bottom: 9px;
-    }
-
-    .kpi-value {
-        color: #111827;
-        font-size: clamp(20px, 2vw, 28px);
-        font-weight: 800;
-        line-height: 1.2;
-    }
-
-    .kpi-footer {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 5px;
-        border-top: 1px solid #EEF1F5;
-        margin-top: 12px;
-        padding-top: 9px;
-        font-size: 11px;
-    }
-
-    .kpi-subtitle {
-        color: #94A3B8;
-        text-align: right;
-    }
-
-    .kpi-positive {
-        color: #047857;
-        background: #ECFDF5;
-        border: 1px solid #A7F3D0;
-        padding: 3px 8px;
-        border-radius: 20px;
-        white-space: nowrap;
-    }
-
-    .kpi-negative {
-        color: #BE123C;
-        background: #FFF1F2;
-        border: 1px solid #FECDD3;
-        padding: 3px 8px;
-        border-radius: 20px;
-        white-space: nowrap;
-    }
-
-    .kpi-neutral {
-        color: #475569;
-        background: #F1F5F9;
-        border: 1px solid #E2E8F0;
-        padding: 3px 8px;
-        border-radius: 20px;
-        white-space: nowrap;
-    }
-
-    /* =====================================================
-       INSIGHT BANNER
-       ===================================================== */
-
-    .insight-banner {
-        background: #FFF5DC;
-        border: 1px solid #F5D99A;
-        border-left: 5px solid #E6A12A;
-        border-radius: 9px;
-        padding: 14px 17px;
-        margin: 12px 0 24px;
-        color: #654B16;
-        font-size: 14px;
-        line-height: 1.8;
-        transition: box-shadow 0.2s ease;
-    }
-
-    .insight-banner:hover {
-        box-shadow: 0 5px 12px rgba(180,120,20,0.12);
-    }
-
-    .insight-title {
-        font-weight: 800;
-        color: #7C4A03;
-        margin-right: 5px;
-    }
-
-    /* =====================================================
-       CHARTS AND TABLES
-       ===================================================== */
-
-    .chart-heading {
-        color: #172033;
-        font-size: 22px;
-        font-weight: 650;
-        margin: 12px 0;
-    }
-
-    div[data-testid="stPlotlyChart"] {
-        background: #FFFFFF;
-        border: 1px solid #E0E4EA;
-        border-radius: 11px;
-        padding: 8px;
-        box-shadow: 0 3px 8px rgba(15,23,42,0.05);
-        transition: all 0.2s ease;
-    }
-
-    div[data-testid="stPlotlyChart"]:hover {
-        box-shadow: 0 7px 16px rgba(15,23,42,0.09);
-        border-color: #C8CED8;
-    }
-
-    [data-testid="stDataFrame"] {
-        border: 1px solid #E0E4EA !important;
-        border-radius: 9px !important;
-        overflow: hidden;
-    }
-
-    /* General buttons */
-
-    div.stButton > button {
-        border-radius: 7px !important;
-        transition: all 0.2s ease-in-out !important;
-    }
-
-    div.stButton > button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 12px rgba(15,23,42,0.12);
-    }
-
-    /* Responsive layout */
-
-    @media (max-width: 900px) {
+        /* Modern Font and Background Cleanups */        
+        html, body, [class*="css"] {
+            font-family: Arial, sans-serif;
+        }
+        
+        /* Main Container Padding Optimization */
         .block-container {
-            padding-left: 1rem !important;
-            padding-right: 1rem !important;
+            padding-top: 1.5rem !important;
+            padding-bottom: 2rem !important;
+            padding-left: 2rem !important;
+            padding-right: 2rem !important;
+            max-width: 1350px !important;
         }
-
-        .dashboard-header {
-            padding: 24px 16px;
+        
+        /* Sidebar Styling */
+        section[data-testid="stSidebar"] {
+            background-color: #FFFFFF !important;
+            border-right: 1px solid #E2E8F0 !important;
         }
-
-        .header-subtitle {
-            font-size: 14px !important;
+        
+        /* Streamlit Native Metric Overrides */
+        [data-testid="stMetricValue"] {
+            font-size: 1.85rem !important;
+            font-weight: 700 !important;
+            color: #1E3A8A !important;
         }
-    }
-
+        
+        /* Native Button Modernization */
+        div.stButton > button {
+            background: linear-gradient(135deg, #1E40AF 0%, #2563EB 100%) !important;
+            color: #FFFFFF !important;
+            border: none !important;
+            border-radius: 0.5rem !important;
+            padding: 0.5rem 1.25rem !important;
+            font-weight: 600 !important;
+            font-size: 0.875rem !important;
+            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2) !important;
+            transition: all 0.2s ease-in-out !important;
+        }
+        
+        div.stButton > button:hover {
+            transform: translateY(-1px) !important;
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.3) !important;
+        }
+        
+        /* Card Containers */
+        .ui-card {
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.25rem;
+        }
+        
+        /* Table enhancements */
+        [data-testid="stDataFrame"] {
+            border: 1px solid #E2E8F0 !important;
+            border-radius: 0.5rem !important;
+        }
     </style>
-    """), unsafe_allow_html=True)
-
-
-# =========================================================
-# 2. SIDEBAR BRANDING
-# =========================================================
-
-def render_sidebar_branding() -> None:
     """
-    Display the ABES logo in the sidebar.
+    st.markdown(custom_css, unsafe_allow_html=True)
 
-    The logo must be stored at:
-    assets/abes-logo.png
-    """
-
-    logo_path = (
-        Path(__file__).resolve().parent.parent
-        / "assets"
-        / "abes-logo.png"
-    )
-
-    if logo_path.is_file() and logo_path.stat().st_size > 100:
-        st.sidebar.image(
-            str(logo_path),
-            width=185
-        )
-    else:
-        st.sidebar.markdown(dedent("""
-        <div style="padding:12px 5px;">
-            <div style="font-size:27px;font-weight:800;color:white;">
-                ABES
-            </div>
-            <div style="font-size:12px;color:#CBD5E1;">
-                Engineering College
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    st.sidebar.markdown("---")
-
-
-# =========================================================
-# 3. DASHBOARD HEADER
-# =========================================================
 
 def render_tailwind_header(
     title: str,
     subtitle: str,
-    badge_text: str = "EXECUTIVE PORTAL",
-    height: int = 190
+    badge_text: str = "MCA Capstone DA",
+    height: int = 135
 ) -> None:
     """
-    Render the maroon executive dashboard header.
-    Function name retained for compatibility with existing pages.
+    Renders an enterprise gradient header card using Tailwind CSS inside an iframe.
+    
+    Args:
+        title: Main page or section heading.
+        subtitle: Secondary descriptive text.
+        badge_text: Pill badge tag text (e.g., 'Step 12: UI Framework').
+        height: Height in pixels for the iframe component.
     """
-
-    safe_title = escape(str(title))
-    safe_subtitle = escape(str(subtitle))
-    safe_badge = escape(str(badge_text))
-
-    st.markdown(dedent(f"""
-    <div class="dashboard-header">
-        <div class="header-content">
-
-            <div class="header-badge">
-                {safe_badge}
+    html_code = f"""
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+        <style>body {{ font-family: 'Inter', sans-serif; }}</style>
+    </head>
+    <body class="bg-transparent m-0 p-0 antialiased">
+        <div class="bg-gradient-to-r from-blue-950 via-blue-900 to-indigo-900 text-white rounded-xl p-5 shadow-md border border-blue-800">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                <div class="space-y-1">
+                    <div class="flex items-center gap-2">
+                        <span class="px-2.5 py-0.5 bg-blue-600/60 border border-blue-400/40 text-blue-100 text-xs font-semibold rounded-full uppercase tracking-wider">
+                            {badge_text}
+                        </span>
+                        <span class="text-xs text-blue-300 font-medium">ABES Engineering College</span>
+                        <span class="text-xs text-blue-400">&bull;</span>
+                        <span class="text-xs text-blue-300">Data Analytics Spec.</span>
+                    </div>
+                    <h1 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight leading-tight">
+                        {title}
+                    </h1>
+                    <p class="text-xs sm:text-sm text-blue-100/90 leading-snug">
+                        {subtitle}
+                    </p>
+                </div>
+                <div class="hidden sm:flex flex-col items-end text-right bg-blue-950/60 px-3 py-2 rounded-lg border border-blue-700/40 shrink-0">
+                    <span class="text-xs font-bold text-white">Mentor: Prof. Kalpna Dwivedi</span>
+                    <span class="text-[11px] text-blue-200">Python 3.12 &bull; SQLite &bull; Plotly</span>
+                </div>
             </div>
-
-            <h1 class="header-title">
-                {safe_title}
-            </h1>
-
-            <p class="header-subtitle">
-                {safe_subtitle}
-            </p>
-
-            <p class="header-subtitle">
-                Python 3.12 &nbsp; • &nbsp; SQLite &nbsp; • &nbsp; Plotly
-            </p>
-
         </div>
-    </div>
-    """, unsafe_allow_html=True)
+    </body>
+    </html>
+    """
+    components.html(html_code, height=height)
 
-
-# =========================================================
-# 4. KPI GRID
-# =========================================================
 
 def render_kpi_grid(
     kpi_list: List[Dict[str, Any]],
     height: int = 120
 ) -> None:
     """
-    Render responsive KPI cards using native Streamlit columns.
+    Renders a responsive 4-column KPI card grid using Tailwind CSS inside an iframe.
+    
+    Args:
+        kpi_list: List of dictionaries with keys:
+            - 'title': Label of KPI (e.g. 'Total Net Revenue')
+            - 'value': Formatted string value (e.g. '₹34,82,450')
+            - 'delta': Change metric string (e.g. '+12.4% MoM')
+            - 'delta_type': 'positive' | 'negative' | 'neutral'
+            - 'subtitle': Footnote or comparison target (e.g. 'vs Target: ₹32.00 L')
+            - 'accent': 'blue' | 'green' | 'amber' | 'red' (border accent)
+        height: Height in pixels for the container iframe.
     """
-
-    if not kpi_list:
-        return
-
-    columns = st.columns(len(kpi_list), gap="medium")
-
-    for column, item in zip(columns, kpi_list):
-
-        title = escape(str(item.get("title", "")))
-        value = escape(str(item.get("value", "")))
-        delta = escape(str(item.get("delta", "")))
-        subtitle = escape(str(item.get("subtitle", "")))
-
+    cards_html = ""
+    for item in kpi_list:
+        title = item.get("title", "")
+        value = item.get("value", "")
+        delta = item.get("delta", "")
         delta_type = item.get("delta_type", "neutral")
-
+        subtitle = item.get("subtitle", "")
+        accent = item.get("accent", "blue")
+        
+        # Color palettes based on delta
         if delta_type == "positive":
-            badge_class = "kpi-positive"
-            prefix = "▲ "
+            delta_badge = f'<span class="inline-flex items-center text-xs font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">&#9650; {delta}</span>'
         elif delta_type == "negative":
-            badge_class = "kpi-negative"
-            prefix = "▼ "
+            delta_badge = f'<span class="inline-flex items-center text-xs font-semibold text-rose-700 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200">&#9660; {delta}</span>'
         else:
-            badge_class = "kpi-neutral"
-            prefix = ""
+            delta_badge = f'<span class="inline-flex items-center text-xs font-medium text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200">{delta}</span>' if delta else ""
+            
+        accent_border = {
+            "blue": "border-l-4 border-l-blue-600 border-slate-200",
+            "green": "border-l-4 border-l-emerald-600 border-slate-200",
+            "amber": "border-l-4 border-l-amber-500 border-slate-200",
+            "red": "border-l-4 border-l-rose-600 border-slate-200",
+        }.get(accent, "border-slate-200")
 
-        with column:
-
-            st.markdown(dedent(f"""
-            <div class="kpi-card">
-
-                <div class="kpi-title">
-                    {title}
-                </div>
-
-                <div class="kpi-value">
-                    {value}
-                </div>
-
-                <div class="kpi-footer">
-
-                    <span class="{badge_class}">
-                        {prefix}{delta}
-                    </span>
-
-                    <span class="kpi-subtitle">
-                        {subtitle}
-                    </span>
-
-                </div>
-
+        card_html = f"""
+        <div class="bg-white rounded-xl p-4 shadow-sm border {accent_border} flex flex-col justify-between hover:shadow-md transition-shadow">
+            <div>
+                <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">{title}</div>
+                <div class="text-2xl font-bold text-slate-900 tracking-tight leading-none my-1">{value}</div>
             </div>
-            """, unsafe_allow_html=True)
+            <div class="mt-2 flex items-center justify-between text-xs pt-1 border-t border-slate-100">
+                {delta_badge}
+                <span class="text-slate-400 font-normal truncate ml-1">{subtitle}</span>
+            </div>
+        </div>
+        """
+        cards_html += card_html
 
+    grid_cols = min(len(kpi_list), 4)
+    cols_class = f"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-{grid_cols} gap-4"
+    
+    html_code = f"""
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+        <style>body {{ font-family: 'Inter', sans-serif; }}</style>
+    </head>
+    <body class="bg-transparent m-0 p-0 antialiased">
+        <div class="{cols_class}">
+            {cards_html}
+        </div>
+    </body>
+    </html>
+    """
+    components.html(html_code, height=height)
 
-# =========================================================
-# 5. EXECUTIVE INSIGHT BANNER
-# =========================================================
 
 def render_insight_box(
     title: str,
@@ -543,52 +223,75 @@ def render_insight_box(
     height: int = 95
 ) -> None:
     """
-    Render an executive insight banner.
-
-    Supports: info, success, warning and danger.
+    Renders a styled Tailwind insight callout banner for executive takeaways.
+    
+    Args:
+        title: Short bold takeaway title.
+        text: Detailed narrative explanation.
+        box_type: 'info' | 'success' | 'warning' | 'danger'
+        height: Height in pixels for the container iframe.
     """
-
-    safe_title = escape(str(title))
-    safe_text = escape(str(text))
-
-   configurations = {
-    "info": ("#FCEEF1", "#9B1835", "#6F1028", "ⓘ"),
-    "success": ("#ECFDF5", "#059669", "#065F46", "✓"),
-    "warning": ("#FFF5DC", "#E6A12A", "#7C4A03", "⚠"),
-    "danger": ("#FFF1F2", "#E11D48", "#9F1239", "⚠"),
+    type_configs = {
+        "info": {
+            "bg": "bg-blue-50",
+            "border": "border-blue-200",
+            "border_l": "border-l-blue-600",
+            "title_color": "text-blue-900",
+            "text_color": "text-blue-800",
+            "icon": "&#9432;"
+        },
+        "success": {
+            "bg": "bg-emerald-50",
+            "border": "border-emerald-200",
+            "border_l": "border-l-emerald-600",
+            "title_color": "text-emerald-900",
+            "text_color": "text-emerald-800",
+            "icon": "&#10003;"
+        },
+        "warning": {
+            "bg": "bg-amber-50",
+            "border": "border-amber-200",
+            "border_l": "border-l-amber-600",
+            "title_color": "text-amber-900",
+            "text_color": "text-amber-800",
+            "icon": "&#9888;"
+        },
+        "danger": {
+            "bg": "bg-rose-50",
+            "border": "border-rose-200",
+            "border_l": "border-l-rose-600",
+            "title_color": "text-rose-900",
+            "text_color": "text-rose-800",
+            "icon": "&#9888;"
+        }
     }
+    cfg = type_configs.get(box_type, type_configs["info"])
+    
+    html_code = f"""
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <style>body {{ font-family: 'Inter', sans-serif; }}</style>
+    </head>
+    <body class="bg-transparent m-0 p-0 antialiased">
+        <div class="{cfg['bg']} border {cfg['border']} border-l-4 {cfg['border_l']} rounded-lg p-3.5 shadow-sm">
+            <div class="flex items-start gap-2.5">
+                <span class="text-base font-bold {cfg['title_color']} leading-none mt-0.5">{cfg['icon']}</span>
+                <div class="space-y-0.5">
+                    <span class="text-xs font-bold uppercase tracking-wider {cfg['title_color']}">{title}:</span>
+                    <span class="text-xs {cfg['text_color']} font-medium leading-relaxed">{text}</span>
+                </div>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+    components.html(html_code, height=height)
 
-    background, border, heading, icon = configurations.get(
-        box_type,
-        configurations["info"]
-    )
-
-    st.markdown(dedent(f"""
-    <div style="
-        background:{background};
-        border:1px solid {border}33;
-        border-left:5px solid {border};
-        border-radius:9px;
-        padding:14px 17px;
-        margin:12px 0 24px;
-        color:{heading};
-        font-size:14px;
-        line-height:1.8;
-    ">
-
-        <span style="font-weight:800;">
-            {icon} {safe_title}:
-        </span>
-
-        {safe_text}
-
-    </div>
-    """, unsafe_allow_html=True)
-
-
-# =========================================================
-# 6. CHART HEADER
-# =========================================================
 
 def render_chart_header(
     title: str,
@@ -596,17 +299,14 @@ def render_chart_header(
     help_text: Optional[str] = None
 ) -> None:
     """
-    Render a reusable chart heading and optional information popover.
+    Renders a standard clean chart header container in pure Streamlit.
     """
-
-    st.markdown(
-        f'<div class="chart-heading">{escape(str(title))}</div>',
-        unsafe_allow_html=True
-    )
-
-    if subtitle:
-        st.caption(subtitle)
-
-    if help_text:
-        with st.popover("ⓘ Chart Information"):
-            st.markdown(help_text)
+    col1, col2 = st.columns([0.85, 0.15])
+    with col1:
+        st.markdown(f"### {title}")
+        if subtitle:
+            st.caption(subtitle)
+    with col2:
+        if help_text:
+            with st.popover("ℹ️ Info"):
+                st.markdown(help_text)
