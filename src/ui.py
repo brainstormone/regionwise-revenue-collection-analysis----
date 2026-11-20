@@ -94,3 +94,67 @@ def apply_custom_css() -> None:
         margin: 3px 8px !important;
         padding: 10px 12px !important;
         border-left: 3px solid transparent !important;
+        transition: all 0.2s ease-in-out !important;
+    }
+
+    section[data-testid="stSidebar"] [data-testid="stSidebarNav"] a:hover {
+        background: #4A1B2B !important;
+        border-left: 3px solid #E64A62 !important;
+        transform: translateX(3px);
+    }
+
+    section[data-testid="stSidebar"] [data-testid="stSidebarNav"] a[aria-current="page"] {
+        background: #4A1B2B !important;
+        border-left: 3px solid #E64A62 !important;
+        font-weight: 700 !important;
+    }
+
+    /* Sidebar filters */
+
+    section[data-testid="stSidebar"] label {
+        color: #E5E7EB !important;
+        font-size: 13px !important;
+    }
+
+    section[data-testid="stSidebar"] [data-baseweb="select"] > div {
+        background: #F8FAFC !important;
+        border-radius: 7px !important;
+    }
+
+    section[data-testid="stSidebar"] [data-baseweb="select"] * {
+        color: #111827 !important;
+    }
+
+    section[data-testid="stSidebar"] [data-testid="stSlider"] p {
+        color: #E5E7EB !important;
+    }
+
+    /* Sidebar buttons */
+
+    section[data-testid="stSidebar"] .stButton button {
+        background: #4A1B2B !important;
+        color: white !important;
+        border: 1px solid #485064 !important;
+        border-radius: 7px !important;
+        transition: all 0.2s ease !important;
+    }
+
+    section[data-testid="stSidebar"] .stButton button:hover {
+        background: var(--maroon) !important;
+        border-color: #E64A62 !important;
+        transform: translateY(-1px);
+    }
+
+    /* =====================================================
+       DASHBOARD HEADER
+       ===================================================== */
+
+    .dashboard-header {
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(
+            115deg,
+            #650D20 0%,
+            #94152F 55%,
+            #741027 100%
+        );
