@@ -8,6 +8,7 @@ Mentor: Prof. Kalpana Dwivedi
 
 from pathlib import Path
 from html import escape
+from textwrap import dedent
 from typing import List, Dict, Any, Optional
 
 import streamlit as st
@@ -20,7 +21,7 @@ import streamlit as st
 def apply_custom_css() -> None:
     """Apply the ABES executive dashboard design system."""
 
-    st.markdown("""
+    st.markdown(dedent("""
     <style>
 
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
@@ -187,7 +188,7 @@ def apply_custom_css() -> None:
 
     .header-badge {
         display: inline-block;
-        background: #263D91;
+        background: rgba(255,255,255,0.14);
         color: #FFFFFF;
         border: 1px solid rgba(255,255,255,0.25);
         border-radius: 20px;
@@ -210,13 +211,6 @@ def apply_custom_css() -> None:
         color: #FCE7EC !important;
         font-size: 17px !important;
         margin: 0 !important;
-    }
-
-    .header-mentor {
-        color: #FFE5EA !important;
-        font-size: 13px !important;
-        font-weight: 600;
-        margin-top: 13px !important;
     }
 
     /* =====================================================
@@ -388,7 +382,7 @@ def apply_custom_css() -> None:
     }
 
     </style>
-    """, unsafe_allow_html=True)
+    """), unsafe_allow_html=True)
 
 
 # =========================================================
@@ -415,7 +409,7 @@ def render_sidebar_branding() -> None:
             width=185
         )
     else:
-        st.sidebar.markdown("""
+        st.sidebar.markdown(dedent("""
         <div style="padding:12px 5px;">
             <div style="font-size:27px;font-weight:800;color:white;">
                 ABES
@@ -448,7 +442,7 @@ def render_tailwind_header(
     safe_subtitle = escape(str(subtitle))
     safe_badge = escape(str(badge_text))
 
-    st.markdown(f"""
+    st.markdown(dedent(f"""
     <div class="dashboard-header">
         <div class="header-content">
 
@@ -464,10 +458,8 @@ def render_tailwind_header(
                 {safe_subtitle}
             </p>
 
-            <p class="header-mentor">
-                Mentor: Prof. Kalpana Dwivedi
-                &nbsp; • &nbsp;
-                Python 3.12 • SQLite • Plotly
+            <p class="header-subtitle">
+                Python 3.12 &nbsp; • &nbsp; SQLite &nbsp; • &nbsp; Plotly
             </p>
 
         </div>
@@ -513,7 +505,7 @@ def render_kpi_grid(
 
         with column:
 
-            st.markdown(f"""
+            st.markdown(dedent(f"""
             <div class="kpi-card">
 
                 <div class="kpi-title">
@@ -559,11 +551,11 @@ def render_insight_box(
     safe_title = escape(str(title))
     safe_text = escape(str(text))
 
-    configurations = {
-        "info": ("#EFF6FF", "#2563EB", "#1E40AF", "ⓘ"),
-        "success": ("#ECFDF5", "#059669", "#065F46", "✓"),
-        "warning": ("#FFF5DC", "#E6A12A", "#7C4A03", "⚠"),
-        "danger": ("#FFF1F2", "#E11D48", "#9F1239", "⚠"),
+   configurations = {
+    "info": ("#FCEEF1", "#9B1835", "#6F1028", "ⓘ"),
+    "success": ("#ECFDF5", "#059669", "#065F46", "✓"),
+    "warning": ("#FFF5DC", "#E6A12A", "#7C4A03", "⚠"),
+    "danger": ("#FFF1F2", "#E11D48", "#9F1239", "⚠"),
     }
 
     background, border, heading, icon = configurations.get(
@@ -571,7 +563,7 @@ def render_insight_box(
         configurations["info"]
     )
 
-    st.markdown(f"""
+    st.markdown(dedent(f"""
     <div style="
         background:{background};
         border:1px solid {border}33;
