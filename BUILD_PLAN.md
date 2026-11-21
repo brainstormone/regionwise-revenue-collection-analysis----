@@ -1,13 +1,22 @@
+
 # BUILD PLAN: Region-Wise Revenue Contribution Analysis
 
 **Project Title:** Region-Wise Revenue Contribution Analysis  
-**Academic Context:** MCA 2nd Year (Data Analytics Specialization), ABES Engineering College  
-**Faculty Mentor:** Prof. Kalpna Dwivedi  
-**Author / Candidate:** MCA Data Analytics Candidate  
+**Project ID:** P056  
+**Academic Context:** MCA – Second Year (Data Analytics), ABES Engineering College  
+**Institution:** ABES Engineering College  
+**Batch ID:** ABES_OND26_MCA 2nd Year_Data Analytics_Batch 01  
+**Project Mentor:** Mr. Dinesh Sereno  
+**Data Analytics Mentor:** Mr. Dinesh  
+**FSD Java Mentor:** Ms. Charsini  
+**FSD Python Mentor:** Mr. Madana  
+**Author / Candidate:** Abhishek Kumar Mishra  
+**University Roll Number:** 2500320140006  
 **Version:** 1.0 (Production Master Plan)  
 **Date:** November 2026  
 
 ---
+
 
 ## 1. Project Executive Summary (10 Lines)
 
