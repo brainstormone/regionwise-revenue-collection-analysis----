@@ -1,13 +1,22 @@
 # CLAUDE.md — Region-Wise Revenue Contribution Analysis
 
+
 ## Project Metadata
+
+- **Project ID**: P056
 - **Project Title**: Region-Wise Revenue Contribution Analysis
 - **Domain**: Sales & Commercial Revenue Analytics (Python Data Analytics)
-- **Course**: MCA 2nd Year (Data Analytics), ABES Engineering College
-- **Mentor**: Prof. Kalpna Dwivedi
-- **Student Name**: [Learner to Provide]
-- **Roll Number**: [Learner to Provide]
-- **Product Stack**: Python + Streamlit (EDA, statistics, Plotly charts, Tailwind UI), SQLite data, pytest tests, Streamlit Community Cloud.
+- **Institution**: ABES Engineering College
+- **Programme**: MCA – Second Year (Data Analytics)
+- **Batch ID**: ABES_OND26_MCA 2nd Year_Data Analytics_Batch 01
+- **Project Mentor**: Mr. Dinesh Sereno
+- **Data Analytics Mentor**: Mr. Dinesh
+- **FSD Java Mentor**: Ms. Charsini
+- **FSD Python Mentor**: Mr. Madana
+- **Student Name**: Abhishek Kumar Mishra
+- **University Roll Number**: 2500320140006
+- **Product Stack**: Python + Streamlit (EDA, statistics, Plotly charts, Tailwind UI), SQLite database, pytest tests, Streamlit Community Cloud.
+
 - **Final Submissions**: ABES Project Document (.docx) + ABES Presentation Slide Deck.
 
 ## Rules & Operating Constraints
