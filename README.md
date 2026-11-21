@@ -105,21 +105,27 @@ rw-collection-analysis/
 | `requirements.txt` | Application dependencies |
 | `requirements-dev.txt` | Development and testing dependencies |
 
+
 ## 📌 Project Overview
 
 | Attribute | Details |
 | :--- | :--- |
-| **Project ID** | `PRJ-DA-01` |
+| **Project ID** | `P056` |
 | **Project Title** | Regionwise Revenue Collection Analysis |
 | **Domain** | Commercial Sales Analytics / Python Data Analytics |
-| **Institution** | ABES Engineering College, Ghaziabad |
-| **Programme** | HCLTech Career Shaper Programme (MCA 2nd Year Data Analytics) |
-| **Batch** | `ABES_OND26_MCA Batch 01` |
-| **Learner** | **Abhishek Kumar Mishra** (Roll No: `2503201450006`) |
-| **Faculty Mentor** | **Prof. Kalpana Dwiwedi** |
+| **Institution** | ABES Engineering College |
+| **Programme** | MCA – Second Year (Data Analytics) |
+| **Batch ID** | `ABES_OND26_MCA 2nd Year_Data Analytics_Batch 01` |
+| **Learner Name** | **Abhishek Kumar Mishra** |
+| **University Roll Number** | `2500320140006` |
+| **Project Mentor** | **Mr. Dinesh Sereno** |
+| **Data Analytics Mentor** | Mr. Dinesh |
+| **FSD Java Mentor** | Ms. Charsini |
+| **FSD Python Mentor** | Mr. Madana |
 | **Release Version** | v1.0.0 (Production Release — November 2026) |
 
 ---
+
 
 ## 🚀 Key Business Findings & Diagnostics
 
