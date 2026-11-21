@@ -10,6 +10,101 @@ A production-grade Commercial Revenue Analytics & Decision Support Platform buil
 
 ---
 
+## 📁 Project Directory Structure
+
+```text
+rw-collection-analysis/
+│
+├── .streamlit/
+│   └── config.toml
+│
+├── data/
+│   ├── app.db
+│   ├── dim_customers.csv
+│   ├── dim_products.csv
+│   ├── dim_regions.csv
+│   ├── fact_sales.csv
+│   ├── region_wise_revenue_data.xlsx
+│   └── view_sales_analysis.csv
+│
+├── docs/
+│   ├── 01_Project_Understanding.docx
+│   ├── 01_name_project_understanding.docx
+│   ├── 02_HMW_Statements.docx
+│   ├── 03_Needs_Analysis.docx
+│   ├── 04_Traceability_Matrix.xlsx
+│   ├── 05_BRD.docx
+│   ├── 07_TRD.docx
+│   ├── 08_Database_Design.xlsx
+│   ├── 09_ER_Diagram.docx
+│   ├── 09_ER_Diagram.png
+│   ├── 10_Data_Validation_Report.docx
+│   ├── 11_User_Stories.docx
+│   ├── 12_UI_Framework.docx
+│   ├── 13_Test_Cases.docx
+│   ├── 14_BUILD_PLAN.docx
+│   ├── 16_Cloud_Deployment.docx
+│   ├── PRJ-DA-01_Presentation.pptx
+│   └── PRJ-DA-01_Project_Document.docx
+│
+├── pages/
+│   ├── 01_Overview.py
+│   ├── 02_Longitudinal_Trends.py
+│   ├── 03_Regional_Comparison.py
+│   ├── 04_Product_Pareto.py
+│   ├── 05_Profitability_Insights.py
+│   ├── 06_Statistical_Testing.py
+│   ├── 07_Data_Quality_Export.py
+│   └── 08_About.py
+│
+├── src/
+│   ├── analytics/
+│   │   ├── __init__.py
+│   │   ├── elasticity.py
+│   │   ├── kpis.py
+│   │   ├── pareto.py
+│   │   └── statistics.py
+│   │
+│   ├── data/
+│   │   ├── __init__.py
+│   │   ├── cleaner.py
+│   │   └── loader.py
+│   │
+│   ├── __init__.py
+│   ├── generate_data.py
+│   └── ui.py
+│
+├── tests/
+│   ├── test_analysis.py
+│   ├── test_app.py
+│   └── test_data.py
+│
+├── .gitattributes
+├── .gitignore
+├── BUILD_PLAN.md
+├── CLAUDE.md
+├── README.md
+├── app.py
+├── requirements-dev.txt
+└── requirements.txt
+```
+
+### Directory Overview
+
+| Directory/File | Description |
+|---|---|
+| `.streamlit/` | Streamlit application configuration |
+| `data/` | SQLite database and project datasets |
+| `docs/` | Project reports, requirements, design documents and presentation |
+| `pages/` | Eight interactive dashboard pages |
+| `src/analytics/` | KPI calculations, Pareto analysis, statistical testing and discount analysis |
+| `src/data/` | Data loading and cleaning modules |
+| `tests/` | Automated application, data and analytics tests |
+| `app.py` | Main Streamlit application entry point |
+| `generate_data.py` | Generates project datasets and database |
+| `requirements.txt` | Application dependencies |
+| `requirements-dev.txt` | Development and testing dependencies |
+
 ## 📌 Project Overview
 
 | Attribute | Details |
@@ -35,4 +130,3 @@ A production-grade Commercial Revenue Analytics & Decision Support Platform buil
 
 ---
 
-## 🏗️ Architecture & Technical Stack
