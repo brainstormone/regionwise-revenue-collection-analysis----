@@ -1,9 +1,15 @@
+
 """
 Region-Wise Revenue Contribution Analysis
 Main Application Controller
-MCA 2nd Year Capstone Project - ABES Engineering College
-Mentor: Prof. Kalpana Dwivedi
+MCA – Second Year Capstone Project - ABES Engineering College
+Project ID: P056
+Student: Abhishek Kumar Mishra
+University Roll Number: 2500320140006
+Project Mentor: Mr. Dinesh Sereno
+Data Analytics Mentor: Mr. Dinesh
 """
+
 
 from pathlib import Path
 
@@ -289,7 +295,7 @@ st.sidebar.markdown(
         Region-Wise Revenue Contribution Analysis<br>
         MCA 2nd Year Capstone Project<br>
         ABES Engineering College<br>
-        Mentor: Prof. Kalpana Dwivedi
+        Mentor: Mr. Dinesh Sereno
     </div>
     """,
     unsafe_allow_html=True
