@@ -128,7 +128,6 @@ def render_tailwind_header(
                     </p>
                 </div>
                 <div class="hidden sm:flex flex-col items-end text-right bg-blue-950/60 px-3 py-2 rounded-lg border border-blue-700/40 shrink-0">
-                    <span class="text-xs font-bold text-white">Mentor: Prof. Kalpna Dwivedi</span>
                     <span class="text-[11px] text-blue-200">Python 3.12 &bull; SQLite &bull; Plotly</span>
                 </div>
             </div>
