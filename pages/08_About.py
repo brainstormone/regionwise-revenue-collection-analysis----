@@ -13,17 +13,25 @@ render_tailwind_header(
     badge_text="Screen UI-08"
 )
 
+
 # 1. Project Metadata Card
 st.markdown("### 🎓 Academic Metadata & Institutional Context")
 st.markdown("""
+- **Project ID:** P056
 - **Project Title:** Region-Wise Revenue Contribution Analysis
-- **Program:** Master of Computer Applications (MCA) — 2nd Year
-- **Specialization:** Data Analytics Specialization
-- **Institution:** ABES Engineering College, Ghaziabad
-- **Academic Mentor:** Prof. Kalpna Dwivedi
-- **Candidate:** MCA 2nd Year Data Analytics Candidate
+- **Program:** Master of Computer Applications (MCA) — Second Year
+- **Specialization:** Data Analytics
+- **Institution:** ABES Engineering College
+- **Batch ID:** ABES_OND26_MCA 2nd Year_Data Analytics_Batch 01
+- **Project Mentor:** Mr. Dinesh Sereno
+- **Data Analytics Mentor:** Mr. Dinesh
+- **FSD Java Mentor:** Ms. Charsini
+- **FSD Python Mentor:** Mr. Madana
+- **Candidate:** Abhishek Kumar Mishra
+- **University Roll Number:** 2500320140006
 - **Technology Stack:** Python 3.12, SQLite 3, pandas, NumPy, SciPy, Plotly, Streamlit, Tailwind CSS, pytest
 """)
+
 
 # 2. Architecture Data Flow Diagram
 st.markdown("### 🏗️ End-to-End System Architecture")
